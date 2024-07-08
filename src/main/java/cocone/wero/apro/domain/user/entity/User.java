@@ -48,4 +48,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Player> players = new ArrayList<>();
+
+    public void updateRefreshToken(String updatedToken) {
+        this.refreshToken = updatedToken;
+    }
 }

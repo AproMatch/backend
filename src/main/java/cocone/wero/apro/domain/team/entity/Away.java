@@ -1,7 +1,6 @@
-package cocone.wero.apro.domain.game.entity;
+package cocone.wero.apro.domain.team.entity;
 
 import cocone.wero.apro.domain.game.entity.enums.Result;
-import cocone.wero.apro.domain.team.entity.Team;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

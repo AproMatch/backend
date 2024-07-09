@@ -1,9 +1,12 @@
 package cocone.wero.apro.domain.player;
 
+import cocone.wero.apro.domain.goal.entity.Goal;
 import cocone.wero.apro.domain.team.entity.Team;
 import cocone.wero.apro.domain.user.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,4 +30,7 @@ public class Player {
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
+
+    @OneToMany(mappedBy = "player")
+    private List<Goal> goals;
 }

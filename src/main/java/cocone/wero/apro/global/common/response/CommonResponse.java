@@ -3,7 +3,7 @@ package cocone.wero.apro.global.common.response;
 import lombok.Getter;
 
 @Getter
-public class CommonResponse<T> {    // 응답 객체
+public class CommonResponse<T> {
 
     private int code;
     private String message;
@@ -13,11 +13,11 @@ public class CommonResponse<T> {    // 응답 객체
         return createSuccess(null);
     }
 
-    public static <T> CommonResponse<T> createSuccess(T data) {     // 성공
+    public static <T> CommonResponse<T> createSuccess(T data) {
         return new CommonResponse<T>(200, "Success", data);
     }
 
-    public static <T> CommonResponse<T> createFailure(int code, String message) {   // 실패
+    public static <T> CommonResponse<T> createFailure(int code, String message) {
         return new CommonResponse<>(code, message, null);
     }
 

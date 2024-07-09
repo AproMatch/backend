@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
 
-    @CreatedDate    // 엔티티가 생성되는 시간 자동 저장
+    @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
-    @LastModifiedDate   // 엔티티가 수정되는 시간 자동 저장
+    @LastModifiedDate
     private LocalDateTime modifiedAt;
 }

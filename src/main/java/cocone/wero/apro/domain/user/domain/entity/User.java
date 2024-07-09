@@ -1,8 +1,8 @@
-package cocone.wero.apro.domain.user.entity;
+package cocone.wero.apro.domain.user.domain.entity;
 
 import cocone.wero.apro.domain.player.Player;
-import cocone.wero.apro.domain.user.entity.enums.Role;
-import cocone.wero.apro.domain.user.entity.enums.SocialType;
+import cocone.wero.apro.domain.user.domain.entity.enums.Role;
+import cocone.wero.apro.domain.user.domain.entity.enums.SocialType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,10 +42,10 @@ public class User {
 
     private String refreshToken;
 
-    private Integer totalGame;
-
-    private Integer totalGoal;
-
     @OneToMany(mappedBy = "user")
     private List<Player> players = new ArrayList<>();
+
+    public void updateRefreshToken(String updatedToken) {
+        this.refreshToken = updatedToken;
+    }
 }

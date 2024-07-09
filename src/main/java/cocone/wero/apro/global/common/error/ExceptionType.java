@@ -1,5 +1,6 @@
 package cocone.wero.apro.global.common.error;
 
+import cocone.wero.apro.global.common.error.exception.BusinessLogicException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;

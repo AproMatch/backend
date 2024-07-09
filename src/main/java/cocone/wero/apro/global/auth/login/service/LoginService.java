@@ -1,7 +1,7 @@
 package cocone.wero.apro.global.auth.login.service;
 
-import cocone.wero.apro.domain.user.entity.User;
-import cocone.wero.apro.domain.user.repository.UserRepository;
+import cocone.wero.apro.domain.user.domain.entity.User;
+import cocone.wero.apro.domain.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

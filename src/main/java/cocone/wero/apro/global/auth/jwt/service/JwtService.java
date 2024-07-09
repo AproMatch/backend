@@ -1,9 +1,8 @@
 package cocone.wero.apro.global.auth.jwt.service;
 
-import cocone.wero.apro.domain.user.repository.UserRepository;
+import cocone.wero.apro.domain.user.domain.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;

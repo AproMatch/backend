@@ -1,7 +1,7 @@
 package cocone.wero.apro.global.auth.jwt.filter;
 
-import cocone.wero.apro.domain.user.entity.User;
-import cocone.wero.apro.domain.user.repository.UserRepository;
+import cocone.wero.apro.domain.user.domain.entity.User;
+import cocone.wero.apro.domain.user.domain.repository.UserRepository;
 import cocone.wero.apro.global.auth.jwt.service.JwtService;
 import cocone.wero.apro.global.auth.jwt.util.PasswordUtil;
 import jakarta.servlet.FilterChain;

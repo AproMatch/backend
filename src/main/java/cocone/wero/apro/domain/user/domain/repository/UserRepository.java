@@ -1,7 +1,7 @@
-package cocone.wero.apro.domain.user.repository;
+package cocone.wero.apro.domain.user.domain.repository;
 
-import cocone.wero.apro.domain.user.entity.User;
-import cocone.wero.apro.domain.user.entity.enums.SocialType;
+import cocone.wero.apro.domain.user.domain.entity.User;
+import cocone.wero.apro.domain.user.domain.entity.enums.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -13,6 +13,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickname(String nickname);
 
     Optional<User> findByRefreshToken(String refreshToken);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByNickname(String nickname);
+
+    boolean existsByTel(String tel);
 
     /**
      * 소셜 타입과 소셜의 식별값으로 회원 찾는 메소드

@@ -22,7 +22,7 @@ public enum ExceptionType {
 
     public static Optional<ExceptionType> findException(Exception ex) {
         return Arrays.stream(ExceptionType.values())
-            .filter(e -> e.getType().equals(ex.getClass())) // 클래스 타입
+            .filter(e -> e.getType().equals(ex.getClass()))
             .findAny();
     }
 }

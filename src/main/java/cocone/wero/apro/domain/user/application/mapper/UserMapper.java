@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    // 수정: 모든 mapper 어노테이션 매핑 최소화
     @Mappings({
             @Mapping(target = "role", expression = "java( cocone.wero.apro.domain.user.domain.entity.enums.Role.USER )"),
             @Mapping(target = "password", expression = "java( passwordEncoder.encode(dto.password()) )")

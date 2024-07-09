@@ -13,25 +13,25 @@ import java.util.Optional;
 @RestControllerAdvice
 public class CommonExceptionController {
 
-    @ExceptionHandler(Exception.class)  // 모든 Exception 처리
+    @ExceptionHandler(Exception.class)
     public CommonResponse<Void> handle(Exception ex) {
         int status = 500;
 
-        Optional<ExceptionType> e = ExceptionType.findException(ex);    // ExceptionType 찾기
+        Optional<ExceptionType> e = ExceptionType.findException(ex);
         if (e.isPresent()) {    // 클라이언트 오류 시
-            status = e.get().getHttpStatus().value();   // 상태 값 4XX로 설정
+            status = e.get().getHttpStatus().value();
         }
         log.error("Error", ex);
 
         return CommonResponse.createFailure(status, ex.getMessage());
     }
 
-    @ExceptionHandler(BindException.class)  // BindException == @ModelAttribute 어노테이션으로 받은 파라미터의 @Valid 통해 발생한 Exception
-    public CommonResponse<Void> handle(BindException e) {   // 클라이언트의 오류일 경우
-        int status = 400;   // 파라미터 값 실수이므로 4XX
+    @ExceptionHandler(BindException.class)
+    public CommonResponse<Void> handle(BindException e) {
+        int status = 400;
 
-        if (e instanceof ErrorResponse) {   // Exception이 ErrorResponse의 인스턴스라면
-            status = ((ErrorResponse) e).getStatusCode().value();   // ErrorResponse에서 상태 값 가져오기
+        if (e instanceof ErrorResponse) {
+            status = ((ErrorResponse) e).getStatusCode().value();
         }
         log.error("Error", e);
 

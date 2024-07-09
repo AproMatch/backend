@@ -1,6 +1,6 @@
 package cocone.wero.apro.global.common.config;
 
-import cocone.wero.apro.domain.user.repository.UserRepository;
+import cocone.wero.apro.domain.user.domain.repository.UserRepository;
 import cocone.wero.apro.global.auth.jwt.filter.JwtAuthenticationProcessingFilter;
 import cocone.wero.apro.global.auth.jwt.service.JwtService;
 import cocone.wero.apro.global.auth.login.filter.CustomJsonUsernamePasswordAuthenticationFilter;
@@ -58,7 +58,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers("/users/sign-up").permitAll()
+                                        .requestMatchers("/api/v1/users/sign-up").permitAll()
+                                        .requestMatchers("/api/v1/users/email").permitAll()
                                         .requestMatchers(HttpMethod.POST, "/oauth2/token").permitAll()
                                         .anyRequest().authenticated()
                 )

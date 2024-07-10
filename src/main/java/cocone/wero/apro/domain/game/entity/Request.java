@@ -1,7 +1,7 @@
 package cocone.wero.apro.domain.game.entity;
 
 
-import cocone.wero.apro.domain.team.entity.Team;
+import cocone.wero.apro.domain.team.domain.entity.Team;
 import cocone.wero.apro.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package cocone.wero.apro.domain.team.entity.enums;
+package cocone.wero.apro.domain.team.domain.entity.enums;
 
 import lombok.Getter;
 

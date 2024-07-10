@@ -1,6 +1,5 @@
-package cocone.wero.apro.domain.goal.entity;
+package cocone.wero.apro.domain.game.entity;
 
-import cocone.wero.apro.domain.player.Player;
 import cocone.wero.apro.domain.team.domain.entity.Team;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,17 +9,16 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Goal {
+@Table(name = "likes")
+public class Like {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "goal_id")
+    @Id @Column(name = "likes_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer goalCnt;
-
     @ManyToOne
-    @JoinColumn(name = "player_id")
-    private Player player;
+    @JoinColumn(name = "game_id")
+    private Game game;
 
     @ManyToOne
     @JoinColumn(name = "team_id")

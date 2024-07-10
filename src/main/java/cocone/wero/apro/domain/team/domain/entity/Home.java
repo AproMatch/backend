@@ -1,4 +1,4 @@
-package cocone.wero.apro.domain.team.entity;
+package cocone.wero.apro.domain.team.domain.entity;
 
 import cocone.wero.apro.domain.field.entity.Field;
 import cocone.wero.apro.domain.game.entity.enums.Result;

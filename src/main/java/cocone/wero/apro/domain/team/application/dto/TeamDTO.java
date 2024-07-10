@@ -1,0 +1,24 @@
+package cocone.wero.apro.domain.team.application.dto;
+
+import cocone.wero.apro.domain.team.domain.entity.enums.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
+
+public class TeamDTO {
+
+    public record Save(
+            @NotBlank String name,
+            @NotNull Integer foundedYear,
+            @NotNull String area,
+            @NotNull Age age,
+            @NotNull List<Day> activeDays,
+            @NotNull Time activeTime,
+            @NotNull Level level,
+            @NotNull Style style,
+            @NotNull Color homeUniformColor,
+            Color awayUniformColor,
+            @NotNull String account
+    ) {}
+}

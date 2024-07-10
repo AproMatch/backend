@@ -1,6 +1,6 @@
-package cocone.wero.apro.domain.team.converter;
+package cocone.wero.apro.domain.team.application.converter;
 
-import cocone.wero.apro.domain.team.entity.enums.Day;
+import cocone.wero.apro.domain.team.domain.entity.enums.Day;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;

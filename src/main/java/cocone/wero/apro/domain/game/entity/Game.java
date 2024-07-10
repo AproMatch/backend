@@ -1,8 +1,8 @@
 package cocone.wero.apro.domain.game.entity;
 
 import cocone.wero.apro.domain.game.entity.enums.Status;
-import cocone.wero.apro.domain.team.entity.Away;
-import cocone.wero.apro.domain.team.entity.Home;
+import cocone.wero.apro.domain.team.domain.entity.Away;
+import cocone.wero.apro.domain.team.domain.entity.Home;
 import cocone.wero.apro.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

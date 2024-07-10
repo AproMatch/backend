@@ -1,11 +1,13 @@
-package cocone.wero.apro.domain.team.entity;
+package cocone.wero.apro.domain.team.domain.entity;
 
-import cocone.wero.apro.domain.team.converter.DayListConverter;
-import cocone.wero.apro.domain.team.entity.enums.*;
+import cocone.wero.apro.domain.game.entity.Like;
+import cocone.wero.apro.domain.team.application.converter.DayListConverter;
+import cocone.wero.apro.domain.team.domain.entity.enums.*;
 import cocone.wero.apro.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -50,4 +52,7 @@ public class Team extends BaseEntity {
     private String profileImg;
 
     private String account;  // format: 예금주 은행명 000000 (숫자만)
+
+    @OneToMany(mappedBy = "team")
+    private List<Like> likes = new ArrayList<>();
 }

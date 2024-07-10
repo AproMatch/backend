@@ -14,7 +14,7 @@ public class UserSaveService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper mapper = UserMapper.INSTANCE;
+    private final UserMapper mapper;
 
     public void save(UserDTO.SignUp dto) {
         User user = mapper.from(dto, passwordEncoder);

@@ -13,6 +13,7 @@ public class UserDTO {
             @NotBlank String tel,
             @NotBlank @Email String email,
             @NotBlank String password,
+            @NotBlank String passwordConfirm,
             @NotBlank String nickname
     ) {}
 }

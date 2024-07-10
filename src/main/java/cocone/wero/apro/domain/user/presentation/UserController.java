@@ -2,6 +2,7 @@ package cocone.wero.apro.domain.user.presentation;
 
 import cocone.wero.apro.domain.user.application.dto.UserDTO;
 import cocone.wero.apro.domain.user.application.usecase.UserUseCase;
+import cocone.wero.apro.global.common.error.exception.BusinessLogicException;
 import cocone.wero.apro.global.common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ public class UserController {
 
     @Operation(summary = "회원 가입", description = "일반 유저 회원 가입")
     @PostMapping("/sign-up")
-    public CommonResponse<Void> signUp(@RequestBody @Valid UserDTO.SignUp dto) {
+    public CommonResponse<Void> signUp(@RequestBody @Valid UserDTO.SignUp dto) throws BusinessLogicException {
         userUseCase.signUp(dto);
         return CommonResponse.createSuccess();
     }

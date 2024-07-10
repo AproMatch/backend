@@ -10,5 +10,7 @@ public class TeamGetService {
 
     private final TeamRepository teamRepository;
 
-
+    public boolean existsByName(String name) {
+        return teamRepository.existsByName(name);
+    }
 }

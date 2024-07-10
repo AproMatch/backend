@@ -1,10 +1,11 @@
 package cocone.wero.apro.domain.user.application.usecase;
 
 import cocone.wero.apro.domain.user.application.dto.UserDTO;
+import cocone.wero.apro.global.common.error.exception.BusinessLogicException;
 
 public interface UserUseCase {
 
     boolean checkEmail(String email);
 
-    void signUp(UserDTO.SignUp dto);
+    void signUp(UserDTO.SignUp dto) throws BusinessLogicException;
 }

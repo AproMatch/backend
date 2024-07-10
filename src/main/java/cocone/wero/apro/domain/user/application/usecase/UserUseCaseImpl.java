@@ -3,6 +3,7 @@ package cocone.wero.apro.domain.user.application.usecase;
 import cocone.wero.apro.domain.user.application.dto.UserDTO;
 import cocone.wero.apro.domain.user.domain.service.UserGetService;
 import cocone.wero.apro.domain.user.domain.service.UserSaveService;
+import cocone.wero.apro.global.common.error.exception.BusinessLogicException;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,11 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public void signUp(UserDTO.SignUp dto) {
+    public void signUp(UserDTO.SignUp dto) throws BusinessLogicException {
+        if(!dto.password().equals(dto.passwordConfirm())) {
+            throw new BusinessLogicException("비밀번호가 일치하지 않습니다.");
+        }
+
         if(userGetService.existsByTel(dto.tel()))
             throw new EntityExistsException("이미 가입된 전화번호입니다.");
 

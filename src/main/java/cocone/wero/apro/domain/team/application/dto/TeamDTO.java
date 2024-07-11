@@ -21,4 +21,21 @@ public class TeamDTO {
             Color awayUniformColor,
             @NotNull String account
     ) {}
+
+    public record Response(
+            Long id,
+            String name,
+            Integer foundedYear,
+            String profileImg,
+            String area,
+            Age age,
+            List<Day> activeDays,
+            List<Time> activeTimes,
+            Level level,
+            Style style,
+            // Manner manner,
+            Color homeUniformColor,
+            Color awayUniformColor,
+            String account
+    ) {}
 }

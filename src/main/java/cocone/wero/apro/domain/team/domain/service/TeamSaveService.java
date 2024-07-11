@@ -14,8 +14,8 @@ public class TeamSaveService {
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
 
-    public void save(TeamDTO.Save dto) {
+    public Team save(TeamDTO.Save dto) {
         Team team = teamMapper.from(dto);
-        teamRepository.save(team);
+        return teamRepository.save(team);
     }
 }

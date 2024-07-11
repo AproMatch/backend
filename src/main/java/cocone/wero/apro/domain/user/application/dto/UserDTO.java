@@ -13,7 +13,7 @@ public class UserDTO {
             @NotBlank String username,
             @NotBlank String password,
             @NotBlank String passwordConfirm,
-            @NotBlank String nickname
+            @NotBlank String name
     ) {}
 
     public record Response (

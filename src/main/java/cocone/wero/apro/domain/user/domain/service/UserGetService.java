@@ -2,6 +2,7 @@ package cocone.wero.apro.domain.user.domain.service;
 
 import cocone.wero.apro.domain.user.application.dto.UserDTO;
 import cocone.wero.apro.domain.user.application.mapper.UserMapper;
+import cocone.wero.apro.domain.user.domain.entity.User;
 import cocone.wero.apro.domain.user.domain.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,11 @@ public class UserGetService {
     public UserDTO.Response find(String username) {
         return userRepository.findByUsername(username)
                 .map(mapper::to)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자입니다."));
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자입니다."));
     }
 }

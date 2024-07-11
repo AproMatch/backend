@@ -1,5 +1,7 @@
 package cocone.wero.apro.domain.user.application.mapper;
 
+import cocone.wero.apro.domain.player.domian.entity.Player;
+import cocone.wero.apro.domain.team.domain.entity.Team;
 import cocone.wero.apro.domain.user.application.dto.UserDTO;
 import cocone.wero.apro.domain.user.domain.entity.User;
 import org.mapstruct.*;
@@ -13,5 +15,16 @@ public interface UserMapper {
     })
     User from(UserDTO.SignUp dto, PasswordEncoder passwordEncoder);
 
+    @Mappings({
+            @Mapping(target = "teamId", expression = "java( mapToTeamId(user) )")  // Add this mapping
+    })
     UserDTO.Response to(User user);
+
+    default Long mapToTeamId(User user) {
+        return user.getPlayers().stream()
+                .findFirst()    // 현재 요구사항은 유저 당 한 팀만 속할 수 있으므로
+                .map(Player::getTeam)
+                .map(Team::getId)
+                .orElse(null);
+    }
 }

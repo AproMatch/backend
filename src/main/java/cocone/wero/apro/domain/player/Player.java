@@ -18,8 +18,6 @@ public class Player {
 
     private Integer totalGame;
 
-    private Integer totalGoal;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

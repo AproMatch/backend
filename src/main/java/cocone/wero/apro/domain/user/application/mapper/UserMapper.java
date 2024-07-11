@@ -12,4 +12,6 @@ public interface UserMapper {
             @Mapping(target = "password", expression = "java( passwordEncoder.encode(dto.password()) )")
     })
     User from(UserDTO.SignUp dto, PasswordEncoder passwordEncoder);
+
+    UserDTO.Response to(User user);
 }

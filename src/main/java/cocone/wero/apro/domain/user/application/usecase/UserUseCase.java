@@ -5,7 +5,7 @@ import cocone.wero.apro.global.common.error.exception.BusinessLogicException;
 
 public interface UserUseCase {
 
-    boolean checkEmail(String email);
+    boolean checkUsername(String username);
 
     void signUp(UserDTO.SignUp dto) throws BusinessLogicException;
 }

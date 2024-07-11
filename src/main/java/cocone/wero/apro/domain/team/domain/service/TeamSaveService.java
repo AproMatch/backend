@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class TeamSaveService {
 
     private final TeamRepository teamRepository;
-    private final TeamMapper teamMapper = TeamMapper.INSTANCE;
+    private final TeamMapper teamMapper;
 
     public void save(TeamDTO.Save dto) {
         Team team = teamMapper.from(dto);

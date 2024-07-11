@@ -4,10 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum Level {
-    LOWLOWLOW,
-    LOWLOW,
-    LOW,
-    ORIGIN1,
-    ORIGIN2,
-    ORIGIN3,
+    ORIGIN,
+    RISING,
+    PRO,
+    ADVANCED
 }

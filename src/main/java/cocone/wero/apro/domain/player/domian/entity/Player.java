@@ -1,5 +1,6 @@
-package cocone.wero.apro.domain.player;
+package cocone.wero.apro.domain.player.domian.entity;
 
+import cocone.wero.apro.domain.player.domian.entity.enums.Position;
 import cocone.wero.apro.domain.team.domain.entity.Team;
 import cocone.wero.apro.domain.user.domain.entity.User;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString
 public class Player {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +20,8 @@ public class Player {
 
     private Integer totalGame;
 
+    private Position position;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -25,4 +29,9 @@ public class Player {
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
+
+    @PrePersist
+    public void init() {
+        totalGame = 0;
+    }
 }

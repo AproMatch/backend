@@ -1,6 +1,6 @@
 package cocone.wero.apro.domain.user.domain.entity;
 
-import cocone.wero.apro.domain.player.Player;
+import cocone.wero.apro.domain.player.domian.entity.Player;
 import cocone.wero.apro.domain.user.domain.entity.enums.Role;
 import cocone.wero.apro.domain.user.domain.entity.enums.SocialType;
 import jakarta.persistence.*;
@@ -26,11 +26,9 @@ public class User {
 
     private String tel;
 
-    private String email;
+    private String username;
 
     private String password;
-
-    private String nickname;
 
     private String profileImg;
 
@@ -45,9 +43,14 @@ public class User {
     private String refreshToken;
 
     @OneToMany(mappedBy = "user")
+    @Builder.Default
     private List<Player> players = new ArrayList<>();
 
     public void updateRefreshToken(String updatedToken) {
         this.refreshToken = updatedToken;
+    }
+
+    public void addPlayer(Player player) {
+        this.players.add(player);
     }
 }

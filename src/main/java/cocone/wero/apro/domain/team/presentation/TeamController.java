@@ -7,6 +7,8 @@ import cocone.wero.apro.global.common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,8 +21,8 @@ public class TeamController {
 
     @Operation(summary = "팀 생성")
     @PostMapping()
-    public CommonResponse<Void> register(@RequestBody @Valid TeamDTO.Save dto) {
-        teamUseCase.register(dto);
+    public CommonResponse<Void> register(@RequestBody @Valid TeamDTO.Save dto, @AuthenticationPrincipal User user) {
+        teamUseCase.register(dto, user.getUsername());
         return CommonResponse.createSuccess();
     }
 

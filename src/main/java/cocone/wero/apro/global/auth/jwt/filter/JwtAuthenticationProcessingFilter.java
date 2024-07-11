@@ -53,7 +53,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
                     String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    String accessToken = jwtService.createAccessToken(user.getId(), user.getEmail());
+                    String accessToken = jwtService.createAccessToken(user.getId(), user.getUsername());
                     jwtService.sendAccessAndRefreshToken(response, accessToken, reIssuedRefreshToken);
                     jwtService.sendAccessToken(response, accessToken);
                 });
@@ -71,8 +71,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                        .ifPresent(email -> userRepository.findByEmail(email)
+                .ifPresent(accessToken -> jwtService.extractId(accessToken)
+                        .ifPresent(username -> userRepository.findByUsername(username)
                                 .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
@@ -85,7 +85,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         }
 
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-                .username(myUser.getEmail())
+                .username(myUser.getUsername())
                 .password(password)
                 .roles(myUser.getRole().name())
                 .build();

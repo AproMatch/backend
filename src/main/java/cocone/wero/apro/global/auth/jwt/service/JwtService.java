@@ -37,19 +37,19 @@ public class JwtService {
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String EMAIL_CLAIM = "email";
+    private static final String USERNAME_CLAIM = "username";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
 
     private final UserRepository userRepository;
 
-    public String createAccessToken(Long id, String email) {
+    public String createAccessToken(Long id, String username) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(ACCESS_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .withClaim(ID_CLAIM, id)
-                .withClaim(EMAIL_CLAIM, email)
+                .withClaim(USERNAME_CLAIM, username)
                 .sign(Algorithm.HMAC512(key));
     }
 
@@ -88,12 +88,12 @@ public class JwtService {
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
-    public Optional<String> extractEmail(String accessToken) {
+    public Optional<String> extractId(String accessToken) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
                     .build()
                     .verify(accessToken)
-                    .getClaim(EMAIL_CLAIM)
+                    .getClaim(USERNAME_CLAIM)
                     .asString());
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");

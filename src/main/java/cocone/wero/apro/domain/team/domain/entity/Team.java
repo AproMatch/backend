@@ -1,6 +1,7 @@
 package cocone.wero.apro.domain.team.domain.entity;
 
 import cocone.wero.apro.domain.game.entity.Like;
+import cocone.wero.apro.domain.player.domian.entity.Player;
 import cocone.wero.apro.domain.team.application.converter.DayListConverter;
 import cocone.wero.apro.domain.team.domain.entity.enums.*;
 import cocone.wero.apro.global.common.entity.BaseEntity;
@@ -54,5 +55,14 @@ public class Team extends BaseEntity {
     private String account;  // format: 예금주 은행명 000000 (숫자만)
 
     @OneToMany(mappedBy = "team")
+    @Builder.Default
     private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team")
+    @Builder.Default
+    private List<Player> players = new ArrayList<>();
+
+    public void addPlayer(Player player) {
+        this.players.add(player);
+    }
 }

@@ -76,3 +76,4 @@ jobs:
               -e REFRESH_EXP=${{ secrets.REFRESH_EXP}} \
               ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
             sudo docker image prune -a -f
+            

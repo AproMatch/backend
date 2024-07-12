@@ -1,71 +1,51 @@
-name: Apro-BE CICD
+name: 'Apro Server CI/CD'
 
 on:
   push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
+    branches:
+      - dev
 
 jobs:
   build:
-    runs-on: self-hosted
-    permissions:
-      contents: read
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v4
-#
-#      - name: Set up JDK 17
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: '17'
-#          distribution: 'temurin'
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Gradle Caching
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*','**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Build with Gradle Wrapper
-        run: ./gradlew build
-
-      - name: Docker build & push to dev
+      - name: Create .env file
         run: |
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
+          touch .env
+          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
+          echo "ACCESS_HEADER=${{ secrets.ACCESS_HEADER }}" >> .env
+          echo "ACCESS_EXP=${{ secrets.ACCESS_EXP }}" >> .env
+          echo "REFRESH_HEADER=${{ secrets.REFRESH_HEADER }}" >> .env
+          echo "REFRESH_EXP=${{ secrets.REFRESH_EXP }}" >> .env
 
-      - name: Deploy to server
-        uses: appleboy/ssh-action@master
+      - name: copy .env file
+        run: cp .env ./deploy/
+
+      - name: Build Docker image
+        run: |
+          docker build --platform linux/amd64 -t apro_backend -f ./deploy/Dockerfile .
+
+      - name: Save Docker image to tar file
+        run: |
+          docker save -o apro_backend.tar apro_backend
+          ls -l
+
+      - name: scp docker image tar file
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SERVER_PASSWORD }}
-          envs: |
-            DB_URL=${{ secrets.DB_URL }}
-            DB_USERNAME=${{ secrets.DB_USERNAME }}
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            JWT_KEY=${{ secrets.JWT_KEY }}
-            ACCESS_HEADER=${{ secrets.ACCESS_HEADER }}
-            ACCESS_EXP=${{ secrets.ACCESS_EXP }}
-            REFRESH_HEADER=${{ secrets.REFRESH_HEADER }}
-            REFRESH_EXP=${{ secrets.REFRESH_EXP }}
-          script: |
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker stop $EXISTING_CONTAINER_ID
-              sudo docker rm $EXISTING_CONTAINER_ID
-            fi
-
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=exited")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker rm $EXISTING_CONTAINER_ID
-            fi
-
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
-            sudo docker run --name spring -d -p 8080:8080 --env-file ./apro.env ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
-            sudo docker image prune -a -f
+          host: ${{secrets.SERVER_HOST}}
+          user: ${{secrets.SERVER_USER}}
+          pass: ${{secrets.SERVER_PWD}}
+          scp: |
+            'apro_backend.tar' => /home/ubuntu/deploy
+            './deploy/check.sh' => /home/ubuntu/deploy
+          last_ssh: |
+            sh ./deploy/check.sh
+            docker load < /home/ubuntu/deploy/apro_backend.tar
+            docker run -itd --name apro_backend -p 8080:8080 apro_backend

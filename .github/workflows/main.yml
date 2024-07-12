@@ -51,7 +51,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ubuntu
           key: ${{ secrets.SERVER_PASSWORD }}
-          envs: GITHUB_SHA, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, API_KEY
+          envs: DB_URL, DB_USERNAME, DB_PASSWORD, JWT_KEY, ACCESS_HEADER, ACCESS_EXP, REFRESH_HEADER, REFRESH_EXP
           script: |
             EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
             if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
@@ -66,10 +66,13 @@ jobs:
             
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
             sudo docker run --name spring -d -p 8080:8080 \
-              -e DB_HOST=${{ secrets.DB_HOST }} \
-              -e DB_PORT=${{ secrets.DB_PORT }} \
-              -e DB_USER=${{ secrets.DB_USER }} \
+              -e DB_URL=${{ secrets.DB_URL }} \
+              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
               -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              -e API_KEY=${{ secrets.API_KEY }} \
+              -e JWT_KEY=${{ secrets.JWT_KEY }} \
+              -e ACCESS_HEADER=${{ secrets.ACCESS_HEADER }} \
+              -e ACCESS_EXP=${{ secrets.ACCESS_EXP}} \
+              -e REFRESH_HEADER=${{ secrets.REFRESH_HEADER }} \
+              -e REFRESH_EXP=${{ secrets.REFRESH_EXP}} \
               ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
             sudo docker image prune -a -f

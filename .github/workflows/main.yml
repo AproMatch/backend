@@ -66,6 +66,6 @@ jobs:
               sudo docker rm $EXISTING_CONTAINER_ID
             fi
 
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weeth
-            sudo docker run --name spring -d -p 8080:8080 --env-file ./weeth.env ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/apro
+            sudo docker run --name spring -d -p 8080:8080 --env-file ./apro.env ${{ secrets.DOCKERHUB_USERNAME }}/apro
             sudo docker image prune -a -f

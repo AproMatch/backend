@@ -15,16 +15,16 @@ COPY . /app
 # Gradle 빌드를 실행하여 JAR 파일 생성
 RUN gradle clean build --no-daemon
 
-# 런타임 이미지로 OpenJDK 11-jre-slim 지정
-FROM openjdk:11-jre-slim
+# 런타임 이미지로 OpenJDK 17-jre-slim 지정
+FROM openjdk:17-jre-slim
 
 # 애플리케이션을 실행할 작업 디렉토리를 생성
 WORKDIR /app
 
 # 빌드 이미지에서 생성된 JAR 파일을 런타임 이미지로 복사
-COPY --from=build /app/build/libs/*.jar /app/leafy.jar
+COPY --from=build /app/build/libs/*.jar /app/apro.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "/docker-springboot.jar"]
-CMD ["-jar", "leafy.jar"]
+CMD ["-jar", "apro.jar"]
 # 운영 및 개발에서 사용되는 환경 설정을 분리

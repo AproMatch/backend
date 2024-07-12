@@ -22,7 +22,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # gradle caching
+      # Gradle Caching
       - name: Gradle Caching
         uses: actions/cache@v3
         with:
@@ -33,25 +33,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # gradle 빌드
+      # Gradle 빌드
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
-      # 도커 이미지 생성 후 이미지 push
+      # Docker 이미지 생성 후 이미지 push
       - name: Docker build & push to dev
         run: |
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
 
-      # EC2 ssh 연결 후 이미지 pull
+      # EC2 SSH 연결 후 이미지 pull
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ubuntu
           key: ${{ secrets.SERVER_PASSWORD }}
-          envs: GITHUB_SHA
+          envs: GITHUB_SHA, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, API_KEY
           script: |
             EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
             if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
@@ -65,5 +65,11 @@ jobs:
             fi
             
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
-            sudo docker run --name spring -d -p 8080:8080 --env-file ./apro.env ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
+            sudo docker run --name spring -d -p 8080:8080 \
+              -e DB_HOST=${{ secrets.DB_HOST }} \
+              -e DB_PORT=${{ secrets.DB_PORT }} \
+              -e DB_USER=${{ secrets.DB_USER }} \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              -e API_KEY=${{ secrets.API_KEY }} \
+              ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
             sudo docker image prune -a -f

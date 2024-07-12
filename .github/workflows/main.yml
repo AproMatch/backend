@@ -8,11 +8,9 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
     steps:
       - uses: actions/checkout@v4
 
@@ -22,7 +20,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Gradle Caching
       - name: Gradle Caching
         uses: actions/cache@v3
         with:
@@ -33,45 +30,42 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # Gradle 빌드
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
-      # Docker 이미지 생성 후 이미지 push
       - name: Docker build & push to dev
         run: |
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/apro:latest
-          
-          # EC2 ssh 연결 후 이미지 pull 및 실행
-          - name: Deploy to server
-            uses: appleboy/ssh-action@master
-            with:
-              host: ${{ secrets.SERVER_HOST }}
-              username: ubuntu
-              key: ${{ secrets.SERVER_PASSWORD }}
-              envs: |
-                DB_URL=${{ secrets.DB_URL }}
-                DB_USERNAME=${{ secrets.DB_USERNAME }}
-                DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-                JWT_KEY=${{ secrets.JWT_KEY }}
-                ACCESS_HEADER=${{ secrets.ACCESS_HEADER }}
-                ACCESS_EXP=${{ secrets.ACCESS_EXP }}
-                REFRESH_HEADER=${{ secrets.REFRESH_HEADER }}
-                REFRESH_EXP=${{ secrets.REFRESH_EXP }}
-              script: |
-                EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
-                if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-                  sudo docker stop $EXISTING_CONTAINER_ID
-                  sudo docker rm $EXISTING_CONTAINER_ID
-                fi
-          
-                EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=exited")
-                if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-                  sudo docker rm $EXISTING_CONTAINER_ID
-                fi
-          
-                sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weeth
-                sudo docker run --name spring -d -p 8080:8080 --env-file ./weeth.env ${{ secrets.DOCKER_USER_NAME }}/weeth
-                sudo docker image prune -a -f
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SERVER_PASSWORD }}
+          envs: |
+            DB_URL=${{ secrets.DB_URL }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            JWT_KEY=${{ secrets.JWT_KEY }}
+            ACCESS_HEADER=${{ secrets.ACCESS_HEADER }}
+            ACCESS_EXP=${{ secrets.ACCESS_EXP }}
+            REFRESH_HEADER=${{ secrets.REFRESH_HEADER }}
+            REFRESH_EXP=${{ secrets.REFRESH_EXP }}
+          script: |
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker stop $EXISTING_CONTAINER_ID
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=exited")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+            sudo docker run --name spring -d -p 8080:8080 --env-file ./weeth.env ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+            sudo docker image prune -a -f

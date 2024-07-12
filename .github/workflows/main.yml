@@ -1,54 +1,210 @@
-name: 'Apro Server CI/CD'
+#name: 'Apro Server CI/CD'
+#
+#on:
+#  push:
+#    branches:
+#      - dev
+#  pull_request:
+#    branches:
+#      - dev
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-20.04
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Create .env file
+#        run: |
+#          touch .env
+#          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+#          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+#          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+#          echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
+#          echo "ACCESS_HEADER=${{ secrets.ACCESS_HEADER }}" >> .env
+#          echo "ACCESS_EXP=${{ secrets.ACCESS_EXP }}" >> .env
+#          echo "REFRESH_HEADER=${{ secrets.REFRESH_HEADER }}" >> .env
+#          echo "REFRESH_EXP=${{ secrets.REFRESH_EXP }}" >> .env
+#
+#      - name: copy .env file
+#        run: cp .env ./deploy/
+#
+#      - name: Build Docker image
+#        run: |
+#          docker build --platform linux/amd64 -t apro_backend -f ./deploy/Dockerfile .
+#
+#      - name: Save Docker image to tar file
+#        run: |
+#          docker save -o apro_backend.tar apro_backend
+#          ls -l
+#
+#      - name: scp docker image tar file
+#        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+#        with:
+#          host: ${{secrets.SERVER_HOST}}
+#          user: ${{secrets.SERVER_USER}}
+#          pass: ${{secrets.SERVER_PWD}}
+#          scp: |
+#            'apro_backend.tar' => /home/ubuntu/deploy
+#            './deploy/check.sh' => /home/ubuntu/deploy
+#          last_ssh: |
+#            sh ./deploy/check.sh
+#            docker load < /home/ubuntu/deploy/apro_backend.tar
+#            docker run -itd --name apro_backend -p 8080:8080 apro_backend
+
+
+#name: Apro-BE CICD
+#
+#on:
+#  push:
+#    branches: [ "dev" ]
+#  pull_request:
+#    branches: [ "dev" ]
+#
+#jobs:
+#  build:
+#
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: read
+#
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Set up JDK 17
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '17'
+#          distribution: 'temurin'
+#
+#      # gradle caching
+#      - name: Gradle Caching
+#        uses: actions/cache@v3
+#        with:
+#          path: |
+#            ~/.gradle/caches
+#            ~/.gradle/wrapper
+#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*','**/gradle-wrapper.properties') }}
+#          restore-keys: |
+#            ${{ runner.os }}-gradle-
+#
+#      # gradle 빌드
+#      - name: Build with Gradle Wrapper
+#        run: ./gradlew build
+#
+#      # 도커 이미지 생성 후 이미지 push
+#      - name: Docker build & push to dev
+#        run: |
+#          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+#          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/weeth .
+#          docker push ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+#
+#      # 도커 이미지 생성 후 이미지 push
+#      - name: Docker build & push to dev
+#        run: |
+#          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+#          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/weeth .
+#          docker push ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+#
+#      # EC2 ssh 연결 후 이미지 pull
+#      - name: Deploy to server
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.SERVER_HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.SERVER_PASSWORD }}
+#          envs: GITHUB_SHA
+#          script: |
+#            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
+#            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+#              sudo docker stop $EXISTING_CONTAINER_ID
+#              sudo docker rm $EXISTING_CONTAINER_ID
+#            fi
+#
+#            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=exited")
+#            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+#              sudo docker rm $EXISTING_CONTAINER_ID
+#            fi
+#
+#            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+#            sudo docker run --name spring -d -p 8080:8080 --env-file ./weeth.env ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+#            sudo docker image prune -a -f
+
+
+name: Apro-BE CICD
 
 on:
   push:
-    branches:
-      - dev
+    branches: [ "dev" ]
   pull_request:
-    branches:
-      - dev
+    branches: [ "dev" ]
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Create .env file
-        run: |
-          touch .env
-          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
-          echo "ACCESS_HEADER=${{ secrets.ACCESS_HEADER }}" >> .env
-          echo "ACCESS_EXP=${{ secrets.ACCESS_EXP }}" >> .env
-          echo "REFRESH_HEADER=${{ secrets.REFRESH_HEADER }}" >> .env
-          echo "REFRESH_EXP=${{ secrets.REFRESH_EXP }}" >> .env
-
-      - name: copy .env file
-        run: cp .env ./deploy/
-
-      - name: Build Docker image
-        run: |
-          docker build --platform linux/amd64 -t apro_backend -f ./deploy/Dockerfile .
-
-      - name: Save Docker image to tar file
-        run: |
-          docker save -o apro_backend.tar apro_backend
-          ls -l
-
-      - name: scp docker image tar file
-        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          host: ${{secrets.SERVER_HOST}}
-          user: ${{secrets.SERVER_USER}}
-          pass: ${{secrets.SERVER_PWD}}
-          scp: |
-            'apro_backend.tar' => /home/ubuntu/deploy
-            './deploy/check.sh' => /home/ubuntu/deploy
-          last_ssh: |
-            sh ./deploy/check.sh
-            docker load < /home/ubuntu/deploy/apro_backend.tar
-            docker run -itd --name apro_backend -p 8080:8080 apro_backend
+          java-version: '17'
+          distribution: 'temurin'
+
+      # gradle caching
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*','**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # gradle 빌드
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+
+      # 도커 이미지 생성 후 이미지 push
+      - name: Docker build & push to dev
+        run: |
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/weeth .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+
+      # EC2 ssh 연결 후 이미지 pull
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SERVER_PASSWORD }}
+          envs: GITHUB_SHA
+          script: |
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker stop $EXISTING_CONTAINER_ID
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=exited")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+            echo "DB_URL=${{ secrets.DB_URL }}" > weeth.env
+            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> weeth.env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> weeth.env
+            echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> weeth.env
+            echo "ACCESS_HEADER=${{ secrets.ACCESS_HEADER }}" >> weeth.env
+            echo "ACCESS_EXP=${{ secrets.ACCESS_EXP }}" >> weeth.env
+            echo "REFRESH_HEADER=${{ secrets.REFRESH_HEADER }}" >> weeth.env
+            echo "REFRESH_EXP=${{ secrets.REFRESH_EXP }}" >> weeth.env
+            sudo docker run --name spring -d -p 8080:8080 --env-file ./weeth.env ${{ secrets.DOCKERHUB_USERNAME }}/weeth
+            sudo docker image prune -a -f

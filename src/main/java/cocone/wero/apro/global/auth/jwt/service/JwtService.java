@@ -88,13 +88,26 @@ public class JwtService {
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
-    public Optional<String> extractId(String accessToken) {
+    public Optional<String> extractUsername(String accessToken) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
                     .build()
                     .verify(accessToken)
                     .getClaim(USERNAME_CLAIM)
                     .asString());
+        } catch (Exception e) {
+            log.error("액세스 토큰이 유효하지 않습니다.");
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Long> extractId(String accessToken) {
+        try {
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(key))
+                    .build()
+                    .verify(accessToken)
+                    .getClaim(ID_CLAIM)
+                    .asLong());
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();

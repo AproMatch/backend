@@ -71,7 +71,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> jwtService.extractId(accessToken)
+                .ifPresent(accessToken -> jwtService.extractUsername(accessToken)
                         .ifPresent(username -> userRepository.findByUsername(username)
                                 .ifPresent(this::saveAuthentication)));
 

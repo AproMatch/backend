@@ -24,12 +24,12 @@ public class TeamUseCaseImpl implements TeamUseCase {
     private final PlayerSaveService playerSaveService;
 
     @Override @Transactional
-    public void register(TeamDTO.Save dto, String username) {
+    public void register(TeamDTO.Save dto, Long userId) {
         if(teamGetService.existsByName(dto.name()))
             throw new EntityExistsException("이미 존재하는 팀명입니다.");
 
         Team team = teamSaveService.save(dto);
-        User user = userGetService.findByUsername(username);
+        User user = userGetService.findById(userId);
         Player player = playerSaveService.save(user, Position.LEADER, team);
         System.out.println(player);
         team.addPlayer(player);

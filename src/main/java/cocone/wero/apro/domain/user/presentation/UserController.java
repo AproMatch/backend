@@ -3,6 +3,7 @@ package cocone.wero.apro.domain.user.presentation;
 import cocone.wero.apro.domain.user.application.dto.UserDTO;
 import cocone.wero.apro.domain.user.application.usecase.UserUseCase;
 import cocone.wero.apro.domain.user.domain.service.UserGetService;
+import cocone.wero.apro.global.auth.annotation.CurrentUser;
 import cocone.wero.apro.global.common.error.exception.BusinessLogicException;
 import cocone.wero.apro.global.common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserUseCase userUseCase;
-    private final UserGetService userGetService;
 
     @Operation(summary = "아이디 중복 검사", description = "회원가입 전 아이디 중복 검사")
     @GetMapping("/check")
@@ -35,7 +35,7 @@ public class UserController {
 
     @Operation(summary = "내 정보 조회")
     @GetMapping("/me")
-    public CommonResponse<UserDTO.Response> getProfile(@AuthenticationPrincipal User user) {
-        return CommonResponse.createSuccess(userGetService.find(user.getUsername()));
+    public CommonResponse<UserDTO.Response> getProfile(@CurrentUser Long userId) {
+        return CommonResponse.createSuccess(userUseCase.find(userId));
     }
 }

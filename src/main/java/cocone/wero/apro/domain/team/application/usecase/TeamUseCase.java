@@ -4,5 +4,5 @@ import cocone.wero.apro.domain.team.application.dto.TeamDTO;
 
 public interface TeamUseCase {
 
-    void register(TeamDTO.Save dto, String username);
+    void register(TeamDTO.Save dto, Long userId);
 }

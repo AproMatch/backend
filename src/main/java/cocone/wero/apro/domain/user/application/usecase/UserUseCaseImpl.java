@@ -1,6 +1,8 @@
 package cocone.wero.apro.domain.user.application.usecase;
 
 import cocone.wero.apro.domain.user.application.dto.UserDTO;
+import cocone.wero.apro.domain.user.application.mapper.UserMapper;
+import cocone.wero.apro.domain.user.domain.entity.User;
 import cocone.wero.apro.domain.user.domain.service.UserGetService;
 import cocone.wero.apro.domain.user.domain.service.UserSaveService;
 import cocone.wero.apro.global.common.error.exception.BusinessLogicException;
@@ -15,6 +17,7 @@ public class UserUseCaseImpl implements UserUseCase {
     private final UserSaveService userSaveService;
 //    private final UserUpdateService userUpdateService;
     private final UserGetService userGetService;
+    private final UserMapper mapper;
 
     @Override
     public boolean checkUsername(String username) {
@@ -30,5 +33,10 @@ public class UserUseCaseImpl implements UserUseCase {
             throw new EntityExistsException("이미 가입된 전화번호입니다.");
 
         userSaveService.save(dto);
+    }
+
+    @Override
+    public UserDTO.Response find(Long userId) {
+        return mapper.to(userGetService.findById(userId));
     }
 }

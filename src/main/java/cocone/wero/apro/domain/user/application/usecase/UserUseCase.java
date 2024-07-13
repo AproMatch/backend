@@ -8,4 +8,6 @@ public interface UserUseCase {
     boolean checkUsername(String username);
 
     void signUp(UserDTO.SignUp dto) throws BusinessLogicException;
+
+    UserDTO.Response find(Long userId);
 }

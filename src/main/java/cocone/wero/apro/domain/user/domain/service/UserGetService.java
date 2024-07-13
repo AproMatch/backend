@@ -23,14 +23,13 @@ public class UserGetService {
         return userRepository.existsByUsername(username);
     }
 
-    public UserDTO.Response find(String username) {
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .map(mapper::to)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자입니다."));
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자입니다."));
     }
 }

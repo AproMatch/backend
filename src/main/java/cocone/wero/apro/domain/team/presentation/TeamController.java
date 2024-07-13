@@ -28,6 +28,12 @@ public class TeamController {
     @Operation(summary = "팀 조회")
     @GetMapping("/{teamId}")
     public CommonResponse<TeamDTO.Response> getTeam(@PathVariable Long teamId) {
-        return CommonResponse.createSuccess(teamGetService.find(teamId));
+        return CommonResponse.createSuccess(teamUseCase.find(teamId));
+    }
+
+    @Operation(summary = "내 팀 조회")
+    @GetMapping("")
+    public CommonResponse<TeamDTO.Response> getMyTeam(@CurrentUser Long userId) {
+        return CommonResponse.createSuccess(teamGetService.findByUserId(userId));
     }
 }

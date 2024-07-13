@@ -21,7 +21,6 @@ public class UserDTO {
             String name,
             String tel,
             String username,
-            String profileImg,
-            Long teamId // 현재 프로토타입에선 팀 하나만 필요하지만 추후에 여러 팀으로 변경될 예정
+            String profileImg
     ) {}
 }

@@ -37,6 +37,6 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     public UserDTO.Response find(Long userId) {
-        return mapper.to(userGetService.findById(userId));
+        return mapper.to(userGetService.find(userId));
     }
 }

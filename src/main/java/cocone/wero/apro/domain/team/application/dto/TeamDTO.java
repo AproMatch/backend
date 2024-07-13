@@ -1,6 +1,7 @@
 package cocone.wero.apro.domain.team.application.dto;
 
 import cocone.wero.apro.domain.team.domain.entity.enums.*;
+import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -30,12 +31,15 @@ public class TeamDTO {
             String area,
             Age age,
             List<Day> activeDays,
-            List<Time> activeTimes,
+            Time activeTime,
             Level level,
             Style style,
             // Manner manner,
             Color homeUniformColor,
             Color awayUniformColor,
             String account
-    ) {}
+    ) {
+        @QueryProjection
+        public Response {}
+    }
 }
